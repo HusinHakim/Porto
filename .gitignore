@@ -1,0 +1,15 @@
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+*.log
+
+# don't commit screenshots from local testing
+screenshots/
+
+# unused pasted images (not referenced anywhere in the site)
+uploads/
+
+# node (if you later port to vite)
+node_modules/
+dist/
