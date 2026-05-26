@@ -13,8 +13,8 @@ const WORLD_HOTSPOTS = [
     short: "Final-year CS student at Universitas Indonesia. Click to know me.",
     lead: "I'm a Software Engineer and final-year Computer Science student building full-stack and mobile applications with disciplined engineering practices.",
     connect: [
-      { label:'GitHub', href:'https://github.com/', icon:'github' },
-      { label:'LinkedIn', href:'https://linkedin.com/', icon:'linkedin' },
+      { label:'GitHub', href:'https://github.com/HusinHakim', icon:'github' },
+      { label:'LinkedIn', href:'https://www.linkedin.com/in/husinhakim/', icon:'linkedin' },
       { label:'Email', href:'mailto:husinhidayatul@gmail.com', icon:'mail' }
     ],
     experience: [
@@ -106,9 +106,9 @@ const WORLD_HOTSPOTS = [
     lead: 'The way in. Email is fastest, but the rest work too.',
     rows: [
       { k:'email', v:'husinhidayatul@gmail.com', href:'mailto:husinhidayatul@gmail.com' },
-      { k:'phone', v:'+62 813-1047-012', href:'tel:+6281310470120' },
-      { k:'github', v:'github.com / husin', href:'https://github.com/' },
-      { k:'linkedin', v:'husin hidayatul hakim', href:'https://linkedin.com/' },
+      { k:'phone', v:'+62 813-1047-0120', href:'tel:+6281310470120' },
+      { k:'github', v:'github.com / HusinHakim', href:'https://github.com/HusinHakim' },
+      { k:'linkedin', v:'husin hidayatul hakim', href:'https://www.linkedin.com/in/husinhakim/' },
       { k:'location', v:'Jakarta, Indonesia', href:null },
       { k:'availability', v:'open · 2026 internship', href:null }
     ]

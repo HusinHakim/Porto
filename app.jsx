@@ -1,4 +1,4 @@
-// app.jsx — Malvin's World shell
+// app.jsx — Husin's World shell
 const { useState, useEffect, useRef, useCallback, useMemo } = React;
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -109,7 +109,7 @@ function Tooltip({ data, x, y }) {
   return (
     <div className="tooltip visible" style={{ left: x, top: y }}>
       {data.id === 'about' && (
-        <div className="ttl-photo"><img src="profile.svg" alt="" /></div>
+        <div className="ttl-photo"><img src="profile.jpg" alt="" /></div>
       )}
       <div className="ttl-num">{data.num} · {data.id}</div>
       <div className="ttl-title">{data.title.replace(data.em,'')}<em>{data.em}</em></div>
@@ -142,7 +142,7 @@ function PanelAbout({ data }) {
     <>
       <div className="ab-grid">
         <div className="ab-left">
-          <div className="ab-photo"><img src="profile.svg" alt="Husin" /></div>
+          <div className="ab-photo"><img src="profile.jpg" alt="Husin" /></div>
           <p className="ab-bio"><b>{data.lead}</b></p>
           <div className="ab-connect">
             <h5 className="ab-h">Connect</h5>
