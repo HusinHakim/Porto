@@ -283,7 +283,7 @@ function SidePanel({ open, hotspot, onClose }) {
 
 // ──────────────────────────────────────────────────────────────
 // MARKERS - bottom strip of region tags
-function Markers({ activeId, onPick }) {
+function Markers({ activeId, onPick, rotating, onToggleRotate }) {
   return (
     <div className="markers">
       <div className="label">Regions</div>
@@ -298,6 +298,19 @@ function Markers({ activeId, onPick }) {
           <span className="lbl">{h.num} · {h.id}</span>
         </button>
       ))}
+      <div className="sep"></div>
+      <button
+        className="mk"
+        onClick={onToggleRotate}
+        aria-label={rotating ? 'Pause rotation' : 'Resume rotation'}
+        aria-pressed={!rotating}
+        title={rotating ? 'pause rotation' : 'resume rotation'}
+      >
+        {rotating
+          ? <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg>
+          : <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>}
+        <span className="lbl">{rotating ? 'pause' : 'rotate'}</span>
+      </button>
     </div>
   );
 }
@@ -406,26 +419,18 @@ function App() {
       <Tooltip data={tooltip.data} x={tooltip.x} y={tooltip.y} />
 
       {/* MARKERS */}
-      <Markers activeId={panelOpen ? panelId : null} onPick={pickRegion} />
+      <Markers
+        activeId={panelOpen ? panelId : null}
+        onPick={pickRegion}
+        rotating={t.autoRotate}
+        onToggleRotate={() => setTweak('autoRotate', !t.autoRotate)}
+      />
 
       {/* SIDE PANEL */}
       <SidePanel open={panelOpen} hotspot={panelId} onClose={closePanel} />
 
       {/* MUSIC */}
       <MusicToggle />
-
-      {/* ROTATION */}
-      <button
-        className={`music-toggle rotate-toggle ${t.autoRotate ? 'on' : ''}`}
-        onClick={() => setTweak('autoRotate', !t.autoRotate)}
-        aria-label={t.autoRotate ? 'Pause rotation' : 'Resume rotation'}
-        aria-pressed={!t.autoRotate}
-        title={t.autoRotate ? 'pause rotation' : 'resume rotation'}
-      >
-        {t.autoRotate
-          ? <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
-          : <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>}
-      </button>
 
       {/* TWEAKS */}
       <TweaksPanel title="Tweaks">
