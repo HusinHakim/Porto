@@ -1,8 +1,8 @@
-// world.jsx — Floating island 3D diorama
+// world.jsx - Floating island 3D diorama
 // Exports: window.World3D (React component), window.WORLD_HOTSPOTS (metadata)
 
 // ────────────────────────────────────────────────────────────
-// CONTENT — hotspot definitions (also rendered in side panels)
+// CONTENT - hotspot definitions (also rendered in side panels)
 const WORLD_HOTSPOTS = [
   {
     id: 'about',
@@ -49,8 +49,8 @@ const WORLD_HOTSPOTS = [
     title: 'Selected Work',
     em: 'Work',
     tagline: 'A few projects worth showing.',
-    short: 'Coursework and side builds — fullstack, mobile, and ML.',
-    lead: 'Selected projects from coursework and side builds — fullstack platforms, mobile apps, and machine-learning experiments.',
+    short: 'Coursework and side builds: fullstack, mobile, and ML.',
+    lead: 'Selected projects from coursework and side builds: fullstack platforms, mobile apps, and machine-learning experiments.',
     projects: [
       { n:'01', y:'2026', t:'GBM · ', em:'Guru Besar Mengajar',
         d:'Multi-role professor-supervision platform built with strict TDD (~100% coverage), SOLID design, SonarQube in GitLab CI, OWASP secure coding, and django-silk profiling.',
@@ -68,7 +68,7 @@ const WORLD_HOTSPOTS = [
         role:'Mobile Developer',
         course:'Platform-Based Programming · UI' },
       { n:'04', y:'2026', t:'', em:'DropDude',
-        d:'Lalamove-style logistics platform built for a security course — threat modeling, secure authentication & authorization, secure coding, and penetration testing.',
+        d:'Lalamove-style logistics platform built for a security course, covering threat modeling, secure authentication & authorization, secure coding, and penetration testing.',
         tags:['Django','PostgreSQL','PenTest','Threat Modeling'],
         role:'Developer',
         course:'Software Security (PKPL) · UI' },
@@ -78,7 +78,7 @@ const WORLD_HOTSPOTS = [
         role:'Backend Developer',
         course:'Database Systems · UI' },
       { n:'06', y:'2025', t:'ATP Tennis · ', em:'Prediction',
-        d:'End-to-end ML models (classification & regression) predicting ATP tennis outcomes. R² 0.81 — ranked 1st across all competing teams in the course Kaggle competition.',
+        d:'End-to-end ML models (classification & regression) predicting ATP tennis outcomes. R² 0.81, ranked 1st across all competing teams in the course Kaggle competition.',
         tags:['Python','scikit-learn','Pandas','Kaggle'],
         role:'Solo · 1st Place',
         course:'Foundations of AI & Data Science · UI' }
@@ -91,7 +91,7 @@ const WORLD_HOTSPOTS = [
     em: 'Stack',
     tagline: 'What lives on my shelf.',
     short: 'Languages, frameworks, and tooling I reach for first.',
-    lead: 'A small library of tools — each picked because it earned its place in shipped work.',
+    lead: 'A small library of tools, each picked because it earned its place in shipped work.',
     groups: [
       { n:'01', t:'Engineering Practice',
         items:['Test-Driven Development','SOLID Design','Secure Coding','Multi-Tenant SaaS Architecture','Codebase Auditing & Refactoring','DevOps · CI/CD','Database Design','Algorithm Design & Analysis','Machine Learning'] },
@@ -113,7 +113,7 @@ const WORLD_HOTSPOTS = [
     title: 'Say Hello',
     em: 'Hello',
     tagline: 'Drop a letter.',
-    short: 'Email, phone, or any social — pick one.',
+    short: 'Email, phone, or any social. Pick one.',
     lead: 'The way in. Email is fastest, but the rest work too.',
     rows: [
       { k:'email', v:'husinhidayatul@gmail.com', href:'mailto:husinhidayatul@gmail.com' },
@@ -128,7 +128,7 @@ const WORLD_HOTSPOTS = [
 window.WORLD_HOTSPOTS = WORLD_HOTSPOTS;
 
 // ────────────────────────────────────────────────────────────
-// PALETTES — time-of-day variations
+// PALETTES - time-of-day variations
 const WORLD_PALETTES = {
   sunset: {
     label:'Sunset',
@@ -454,7 +454,7 @@ function buildScene(THREE, palette) {
     });
   }
 
-  // — Character (ABOUT) — front-center
+  // - Character (ABOUT) - front-center
   function makeCharacter() {
     const g = new THREE.Group();
     const skinMat = new THREE.MeshStandardMaterial({ color: palette.skin, flatShading: true });
@@ -491,11 +491,11 @@ function buildScene(THREE, palette) {
   character.position.set(0.5, 0, 4.5);
   character.rotation.y = -0.2;
   character.scale.setScalar(1.25);
-  // default rotation faces +z which is toward camera — perfect
+  // default rotation faces +z which is toward camera - perfect
   islandGrp.add(character);
   tagHotspot(character, 'about', 1.4);
 
-  // — Laptop on desk (PROJECTS) — right side
+  // - Laptop on desk (PROJECTS) - right side
   function makeDeskLaptop() {
     const g = new THREE.Group();
     const woodMat = new THREE.MeshStandardMaterial({ color: palette.deskWood, flatShading: true });
@@ -516,7 +516,7 @@ function buildScene(THREE, palette) {
     base.position.set(0, 0.8, 0);
     g.add(base);
 
-    // Laptop screen — pivot
+    // Laptop screen - pivot
     const screenPivot = new THREE.Group();
     screenPivot.position.set(0, 0.82, -0.22);
     const screen = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.45, 0.04), lapMat);
@@ -558,7 +558,7 @@ function buildScene(THREE, palette) {
   islandGrp.add(desk);
   tagHotspot(desk, 'projects', 1.4);
 
-  // — Bookshelf / library (SKILLS) — left side
+  // - Bookshelf / library (SKILLS) - left side
   function makeBookshelf() {
     const g = new THREE.Group();
     const woodMat = new THREE.MeshStandardMaterial({ color: palette.deskWood, flatShading: true });
@@ -608,7 +608,7 @@ function buildScene(THREE, palette) {
   islandGrp.add(shelf);
   tagHotspot(shelf, 'skills', 2.2);
 
-  // — Mailbox (CONTACT) — front-right
+  // - Mailbox (CONTACT) - front-right
   function makeMailbox() {
     const g = new THREE.Group();
     const post = new THREE.Mesh(
@@ -623,7 +623,7 @@ function buildScene(THREE, palette) {
     );
     box.position.y = 1.0;
     g.add(box);
-    // roof — half cylinder
+    // roof - half cylinder
     const roof = new THREE.Mesh(
       new THREE.CylinderGeometry(0.18, 0.18, 0.55, 20, 1, false, 0, Math.PI),
       new THREE.MeshStandardMaterial({ color: palette.mailbox, flatShading: true })
@@ -724,7 +724,7 @@ function World3D({ palette, autoRotate, onHover, onSelect, focusId }) {
     const { scene, hotspots, islandGrp, dust, birds } = buildScene(THREE, palette);
 
     // pivot rotates the entire island for drag-to-explore
-    // We rotate islandGrp instead — same effect.
+    // We rotate islandGrp instead - same effect.
 
     const raycaster = new THREE.Raycaster();
     stateRef.current.raycaster = raycaster;

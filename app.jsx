@@ -1,4 +1,4 @@
-// app.jsx — Husin's World shell
+// app.jsx - Husin's World shell
 const { useState, useEffect, useRef, useCallback, useMemo } = React;
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -8,7 +8,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 }/*EDITMODE-END*/;
 
 // ──────────────────────────────────────────────────────────────
-// MUSIC — Tone.js warm pad loop
+// MUSIC - Tone.js warm pad loop
 function useMusic(initialOn) {
   const [on, setOn] = useState(false);
   const refs = useRef({ initialized: false });
@@ -136,7 +136,7 @@ const SocialIcon = ({ name }) => {
 };
 
 // ──────────────────────────────────────────────────────────────
-// PANELS — content per hotspot
+// PANELS - content per hotspot
 function PanelAbout({ data }) {
   return (
     <>
@@ -225,7 +225,7 @@ function PanelSkills({ data }) {
           <div className="skitem" key={g.n}>
             <div className="sktitle">
               <h4>{g.t}</h4>
-              <span className="skn">— {g.n}</span>
+              <span className="skn">{g.n}</span>
             </div>
             <div className="sklist">{g.items.map(i => <span key={i}>{i}</span>)}</div>
           </div>
@@ -282,7 +282,7 @@ function SidePanel({ open, hotspot, onClose }) {
 }
 
 // ──────────────────────────────────────────────────────────────
-// MARKERS — bottom strip of region tags
+// MARKERS - bottom strip of region tags
 function Markers({ activeId, onPick }) {
   return (
     <div className="markers">
@@ -413,6 +413,19 @@ function App() {
 
       {/* MUSIC */}
       <MusicToggle />
+
+      {/* ROTATION */}
+      <button
+        className={`music-toggle rotate-toggle ${t.autoRotate ? 'on' : ''}`}
+        onClick={() => setTweak('autoRotate', !t.autoRotate)}
+        aria-label={t.autoRotate ? 'Pause rotation' : 'Resume rotation'}
+        aria-pressed={!t.autoRotate}
+        title={t.autoRotate ? 'pause rotation' : 'resume rotation'}
+      >
+        {t.autoRotate
+          ? <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+          : <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>}
+      </button>
 
       {/* TWEAKS */}
       <TweaksPanel title="Tweaks">
