@@ -427,6 +427,24 @@ function buildScene(THREE, palette) {
   // ── Hotspots ──
   const hotspots = []; // list of THREE.Group with userData.hotspot
 
+  function exclaimTexture(THREE, color) {
+    const c = document.createElement('canvas');
+    c.width = c.height = 128;
+    const ctx = c.getContext('2d');
+    ctx.font = '900 112px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.lineWidth = 14;
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#fdf2dc';
+    ctx.strokeText('!', 64, 70);
+    ctx.fillStyle = '#' + new THREE.Color(color).getHexString();
+    ctx.fillText('!', 64, 70);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }
+
   function tagHotspot(group, id, anchorY) {
     const meta = WORLD_HOTSPOTS.find(h => h.id === id);
     group.userData.hotspot = { ...meta, anchorY: anchorY };
@@ -452,6 +470,15 @@ function buildScene(THREE, palette) {
         o.receiveShadow = true;
       }
     });
+
+    // floating "!" marker, like an NPC quest sign, so visitors know it's interactive
+    const marker = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: exclaimTexture(THREE, palette.houseRoof), transparent: true, depthTest: false
+    }));
+    marker.raycast = function(){};
+    marker.renderOrder = 10;
+    group.add(marker);
+    group.userData.marker = marker;
   }
 
   // - Character (ABOUT) - front-center
@@ -834,6 +861,15 @@ function World3D({ palette, autoRotate, onHover, onSelect, onDragStart, onDragEn
           const targetOp = isHov ? 0.55 : 0.0;
           ring.material.opacity += (targetOp - ring.material.opacity) * 0.15;
           ring.scale.setScalar(1 + Math.sin(t * 3) * 0.05);
+        }
+        const marker = hg.userData.marker;
+        if (marker) {
+          const isHov = s.hovered === hg;
+          // divide by group scale so every "!" looks the same size
+          const gs = hg.scale.x || 1;
+          marker.position.y = (hg.userData.hotspot.anchorY + 0.7 + Math.sin(t * 2.4 + i) * 0.12) / gs;
+          const target = (isHov ? 0.95 : 0.7 + Math.sin(t * 4 + i) * 0.04) / gs;
+          marker.scale.setScalar(marker.scale.x + (target - marker.scale.x) * 0.2);
         }
       });
 
