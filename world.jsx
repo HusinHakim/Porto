@@ -691,7 +691,7 @@ function buildScene(THREE, palette) {
 
 // ────────────────────────────────────────────────────────────
 // Main React component
-function World3D({ palette, autoRotate, onHover, onSelect, focusId }) {
+function World3D({ palette, autoRotate, onHover, onSelect, onDragStart, onDragEnd, focusId }) {
   const wrapRef = React.useRef(null);
   const stateRef = React.useRef({
     rotY: 0, targetRotY: 0,
@@ -701,6 +701,7 @@ function World3D({ palette, autoRotate, onHover, onSelect, focusId }) {
   });
   // keep autoRotate in sync without re-init
   React.useEffect(() => { stateRef.current.autoRotate = autoRotate; }, [autoRotate]);
+  React.useEffect(() => { stateRef.current.dragCb = { onDragStart, onDragEnd }; }, [onDragStart, onDragEnd]);
 
   React.useEffect(() => {
     const wrap = wrapRef.current;
@@ -737,6 +738,7 @@ function World3D({ palette, autoRotate, onHover, onSelect, focusId }) {
       s.startX = e.clientX;
       s.startRot = islandGrp.rotation.y;
       s.totalMove = 0;
+      s.dragMoved = false;
       try { if (e.pointerId != null) canvas.setPointerCapture?.(e.pointerId); } catch(_) {}
       wrap.classList.add('grabbing');
     };
@@ -754,6 +756,11 @@ function World3D({ palette, autoRotate, onHover, onSelect, focusId }) {
         const dx = e.clientX - s.startX;
         s.totalMove += Math.abs(dx);
         s.targetRotY = s.startRot + dx * 0.008;
+        // same 5px threshold as click detection, so a click is not a drag
+        if (!s.dragMoved && s.totalMove >= 5) {
+          s.dragMoved = true;
+          s.dragCb?.onDragStart?.();
+        }
         // fire first-drag event
         if (!s._everDragged) {
           s._everDragged = true;
@@ -766,6 +773,7 @@ function World3D({ palette, autoRotate, onHover, onSelect, focusId }) {
       if (!s.dragging) return;
       s.dragging = false;
       wrap.classList.remove('grabbing');
+      if (s.dragMoved) s.dragCb?.onDragEnd?.();
       // click if not dragged
       if (s.totalMove < 5 && s.hovered) {
         if (onSelect) onSelect(s.hovered);

@@ -1,6 +1,9 @@
 // app.jsx - Husin's World shell
 const { useState, useEffect, useRef, useCallback, useMemo } = React;
 
+// how long auto-rotate waits after the user lets go of a drag
+const DRAG_HOLD_MS = 3000;
+
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "palette": "sunset",
   "autoRotate": true,
@@ -76,8 +79,11 @@ function useMusic(initialOn) {
 function MusicToggle() {
   const [on, toggle] = useMusic(false);
   return (
-    <button className={`music-toggle ${on ? 'on' : ''}`} onClick={toggle} aria-label="Toggle music" title={on ? 'pause warm pad' : 'play warm pad'}>
-      <div className="bars"><span></span><span></span><span></span><span></span></div>
+    <button className={`music-toggle ${on ? 'on' : ''}`} onClick={toggle} aria-label={on ? 'Mute music' : 'Play music'} aria-pressed={on} title={on ? 'mute music' : 'play music'}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+        {!on && <path d="M3 3l18 18"/>}
+      </svg>
     </button>
   );
 }
@@ -283,7 +289,7 @@ function SidePanel({ open, hotspot, onClose }) {
 
 // ──────────────────────────────────────────────────────────────
 // MARKERS - bottom strip of region tags
-function Markers({ activeId, onPick, rotating, onToggleRotate }) {
+function Markers({ activeId, onPick }) {
   return (
     <div className="markers">
       <div className="label">Regions</div>
@@ -298,19 +304,6 @@ function Markers({ activeId, onPick, rotating, onToggleRotate }) {
           <span className="lbl">{h.num} · {h.id}</span>
         </button>
       ))}
-      <div className="sep"></div>
-      <button
-        className="mk"
-        onClick={onToggleRotate}
-        aria-label={rotating ? 'Pause rotation' : 'Resume rotation'}
-        aria-pressed={!rotating}
-        title={rotating ? 'pause rotation' : 'resume rotation'}
-      >
-        {rotating
-          ? <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg>
-          : <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>}
-        <span className="lbl">{rotating ? 'pause' : 'rotate'}</span>
-      </button>
     </div>
   );
 }
@@ -325,7 +318,19 @@ function App() {
   const [panelId, setPanelId] = useState(null);
   const [panelOpen, setPanelOpen] = useState(false);
   const [focusId, setFocusId] = useState(null);
-  const [dragHinted, setDragHinted] = useState(false);
+  // hint phase: 'drag' until the first real drag, 'holding' while the user
+  // drags plus a short pause after, then 'ready' (tap to pause/resume)
+  const [hintPhase, setHintPhase] = useState('drag');
+  const holdTimer = useRef(null);
+  const handleDragStart = useCallback(() => {
+    clearTimeout(holdTimer.current);
+    setHintPhase('holding');
+  }, []);
+  const handleDragEnd = useCallback(() => {
+    clearTimeout(holdTimer.current);
+    holdTimer.current = setTimeout(() => setHintPhase('ready'), DRAG_HOLD_MS);
+  }, []);
+  useEffect(() => () => clearTimeout(holdTimer.current), []);
 
   // apply sky colors to CSS
   useEffect(() => {
@@ -338,7 +343,6 @@ function App() {
   const handleHover = useCallback((hotspot, x, y) => {
     if (hotspot) {
       setTooltip({ data: hotspot, x, y });
-      setDragHinted(true); // also dismiss drag hint
     } else {
       setTooltip({ data: null, x: 0, y: 0 });
     }
@@ -352,12 +356,6 @@ function App() {
     setPanelOpen(true);
     setFocusId(id);
     setTooltip({ data: null, x: 0, y: 0 });
-  }, []);
-
-  // dismiss drag hint after a few seconds anyway
-  useEffect(() => {
-    const id = setTimeout(() => setDragHinted(true), 4500);
-    return () => clearTimeout(id);
   }, []);
 
   const closePanel = useCallback(() => {
@@ -377,9 +375,11 @@ function App() {
     <>
       <World3D
         palette={palette}
-        autoRotate={t.autoRotate}
+        autoRotate={t.autoRotate && hintPhase !== 'holding'}
         onHover={handleHover}
         onSelect={handleSelect}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
         focusId={focusId}
       />
 
@@ -404,27 +404,35 @@ function App() {
       </nav>
 
       {/* DRAG HINT */}
-      <div className={`drag-hint ${dragHinted ? 'hidden' : ''}`}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M8 8.5V5a1.5 1.5 0 1 1 3 0v5"/>
-          <path d="M11 10V4a1.5 1.5 0 1 1 3 0v7"/>
-          <path d="M14 11V5a1.5 1.5 0 1 1 3 0v9"/>
-          <path d="M17 11V7a1.5 1.5 0 1 1 3 0v8a6 6 0 0 1-6 6h-2a6 6 0 0 1-5.5-3.5L5 14"/>
-        </svg>
-        <div>drag to explore</div>
-        <div className="arrows">← →</div>
-      </div>
+      {hintPhase === 'ready' ? (
+        <button
+          className="drag-hint tap"
+          onClick={() => setTweak('autoRotate', !t.autoRotate)}
+          aria-pressed={!t.autoRotate}
+        >
+          {t.autoRotate
+            ? <svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg>
+            : <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>}
+          <span>tap here to {t.autoRotate ? 'pause' : 'rotate'}</span>
+        </button>
+      ) : (
+        <div className={`drag-hint ${hintPhase === 'holding' ? 'hidden' : ''}`}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M8 8.5V5a1.5 1.5 0 1 1 3 0v5"/>
+            <path d="M11 10V4a1.5 1.5 0 1 1 3 0v7"/>
+            <path d="M14 11V5a1.5 1.5 0 1 1 3 0v9"/>
+            <path d="M17 11V7a1.5 1.5 0 1 1 3 0v8a6 6 0 0 1-6 6h-2a6 6 0 0 1-5.5-3.5L5 14"/>
+          </svg>
+          <div>drag to explore</div>
+          <div className="arrows">← →</div>
+        </div>
+      )}
 
       {/* TOOLTIP */}
       <Tooltip data={tooltip.data} x={tooltip.x} y={tooltip.y} />
 
       {/* MARKERS */}
-      <Markers
-        activeId={panelOpen ? panelId : null}
-        onPick={pickRegion}
-        rotating={t.autoRotate}
-        onToggleRotate={() => setTweak('autoRotate', !t.autoRotate)}
-      />
+      <Markers activeId={panelOpen ? panelId : null} onPick={pickRegion} />
 
       {/* SIDE PANEL */}
       <SidePanel open={panelOpen} hotspot={panelId} onClose={closePanel} />
