@@ -434,9 +434,9 @@ function buildScene(THREE, palette) {
     ctx.font = '900 112px Georgia, serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.lineWidth = 14;
+    ctx.lineWidth = 8;
     ctx.lineJoin = 'round';
-    ctx.strokeStyle = '#fdf2dc';
+    ctx.strokeStyle = '#2a1a10';
     ctx.strokeText('!', 64, 70);
     ctx.fillStyle = '#' + new THREE.Color(color).getHexString();
     ctx.fillText('!', 64, 70);
