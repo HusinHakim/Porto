@@ -347,12 +347,43 @@ function buildScene(THREE, palette) {
   mountain2.receiveShadow = true;
   islandGrp.add(mountain2);
 
-  // Snow cap
+  // Snow cap: same slope and facets as the mountain, a hair larger, so it
+  // reads as snow on the peak instead of a hat sticking out past the sides
   const snowMat = new THREE.MeshStandardMaterial({ color: palette.snow, flatShading: true });
-  const snow = new THREE.Mesh(new THREE.ConeGeometry(0.95, 1.3, 7), snowMat);
-  snow.position.set(-3.6, 4.1, -4.5);
+  const snowH = 1.3 * 1.04;
+  const snow = new THREE.Mesh(new THREE.ConeGeometry(2.6 * snowH / 4.6, snowH, 7), snowMat);
+  snow.position.set(-3.6, 4.6 + 0.02 - snowH / 2, -4.5);
   snow.rotation.y = 0.4;
   islandGrp.add(snow);
+
+  // Ground footprints (x, z, radius) that scenery must not overlap.
+  // Hotspot objects are built further down; their spots are listed here.
+  const occupied = [
+    { x: -3.6, z: -4.5, r: 2.6 },  // mountain
+    { x: -5.6, z: -3.2, r: 1.8 },  // back mountain
+    { x: 0.5,  z: 4.5,  r: 0.6 },  // character
+    { x: 3.5,  z: 0.5,  r: 0.9 },  // desk
+    { x: -3.2, z: 1.0,  r: 0.9 },  // bookshelf
+    { x: -2.6, z: 4.0,  r: 0.5 }   // mailbox
+  ];
+  const ISLAND_R = 7.8;
+  // Push (x, z) out of every footprint it overlaps; null if it would fall off the island.
+  function placeFree(x, z, r) {
+    for (let pass = 0; pass < 8; pass++) {
+      let moved = false;
+      for (const o of occupied) {
+        const dx = x - o.x, dz = z - o.z;
+        const d = Math.hypot(dx, dz) || 0.001;
+        const min = o.r + r + 0.05;
+        if (d < min) { x = o.x + dx / d * min; z = o.z + dz / d * min; moved = true; }
+      }
+      if (!moved) break;
+    }
+    if (Math.hypot(x, z) + r > ISLAND_R) return null;
+    if (occupied.some(o => Math.hypot(x - o.x, z - o.z) < o.r + r)) return null;
+    occupied.push({ x, z, r });
+    return [x, z];
+  }
 
   // ── Trees ──
   function makeTree(x, z, scale, leafColor) {
@@ -390,8 +421,10 @@ function buildScene(THREE, palette) {
   ];
   treeSpots.forEach(([x, z]) => {
     const s = 0.7 + Math.random() * 0.55;
+    const spot = placeFree(x, z, 0.55 * s);
+    if (!spot) return;
     const c = treeColors[Math.floor(Math.random() * treeColors.length)];
-    islandGrp.add(makeTree(x, z, s, c));
+    islandGrp.add(makeTree(spot[0], spot[1], s, c));
   });
 
   // ── Rocks ──
@@ -408,8 +441,10 @@ function buildScene(THREE, palette) {
   }
   for (let i = 0; i < 12; i++) {
     const a = Math.random() * Math.PI * 2;
-    const r = 4 + Math.random() * 4;
-    islandGrp.add(makeRock(Math.cos(a) * r, Math.sin(a) * r, 0.4 + Math.random() * 0.6));
+    const r = 4 + Math.random() * 3.5;
+    const scale = 0.4 + Math.random() * 0.6;
+    const spot = placeFree(Math.cos(a) * r, Math.sin(a) * r, 0.35 * scale);
+    if (spot) islandGrp.add(makeRock(spot[0], spot[1], scale));
   }
 
   // small flowers/pebbles dots
@@ -473,7 +508,7 @@ function buildScene(THREE, palette) {
 
     // floating "!" marker, like an NPC quest sign, so visitors know it's interactive
     const marker = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: exclaimTexture(THREE, palette.houseRoof), transparent: true, depthTest: false
+      map: exclaimTexture(THREE, palette.houseRoof), transparent: true
     }));
     marker.raycast = function(){};
     marker.renderOrder = 10;
