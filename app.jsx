@@ -70,8 +70,10 @@ function useMusic(initialOn) {
       refs.current = { initialized: true, T };
     }
     const T = window.Tone;
-    if (!on) { T.Transport.start(); setOn(true); }
-    else { T.Transport.pause(); setOn(false); }
+    // mute the master output too, so reverb/delay tails and released notes
+    // don't keep ringing after the user turns music off
+    if (!on) { T.Destination.mute = false; T.Transport.start(); setOn(true); }
+    else { T.Transport.pause(); T.Destination.mute = true; setOn(false); }
   }, [on]);
   return [on, toggle];
 }
