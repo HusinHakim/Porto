@@ -10,17 +10,22 @@ const WORLD_HOTSPOTS = [
     title: 'About Husin',
     em: 'Husin',
     tagline: "Hi, I'm Husin.",
-    short: "Final-year CS student at Universitas Indonesia. Click to know me.",
-    lead: "I'm a Software Engineer and final-year Computer Science student building full-stack and mobile applications with disciplined engineering practices.",
+    short: "CS student at UI · SWE Intern at PT Datara · DAA Teaching Assistant. Click to know me.",
+    lead: "I'm a final-year Computer Science student at Universitas Indonesia, a Software Engineer Intern at PT Datara Teknologi Solusi building a production multi-tenant SaaS, and a Teaching Assistant for Design & Analysis of Algorithms.",
     connect: [
       { label:'GitHub', href:'https://github.com/HusinHakim', icon:'github' },
       { label:'LinkedIn', href:'https://www.linkedin.com/in/husinhakim/', icon:'linkedin' },
       { label:'Email', href:'mailto:husinhidayatul@gmail.com', icon:'mail' }
     ],
     experience: [
-      { role:'Software Engineering Intern',
-        org:'Open for opportunity',
-        date:'Soon' },
+      { role:'Software Engineer Intern · Fullstack',
+        org:'PT Datara Teknologi Solusi',
+        date:'2026 – Present',
+        desc:'Build a multi-tenant booking, appointment, dining & POS SaaS (Laravel 13, Inertia, React). WhatsApp Cloud API flows & templates, iPaymu QRIS payments, Google Calendar sync, realtime updates via Centrifugo. Led tenant-isolation security audit, refactors, and backend/frontend test suites (PHPUnit, Vitest).' },
+      { role:'Teaching Assistant · Design & Analysis of Algorithms',
+        org:'Faculty of Computer Science, Universitas Indonesia',
+        date:'2026 – Present',
+        desc:'Assist lectures across DAA classes: worksheets, exam support, and student Q&A; set up the course Discord with role-based class sections and a ticketing bot.' },
       { role:'Chairman',
         org:'UKM Flag Football, Universitas Indonesia',
         date:'Present' },
@@ -85,15 +90,17 @@ const WORLD_HOTSPOTS = [
     lead: 'A small library of tools — each picked because it earned its place in shipped work.',
     groups: [
       { n:'01', t:'Engineering Practice',
-        items:['Test-Driven Development','SOLID Design','Secure Coding','DevOps · CI/CD','Database Design','Machine Learning'] },
+        items:['Test-Driven Development','SOLID Design','Secure Coding','Multi-Tenant SaaS Architecture','Codebase Auditing & Refactoring','DevOps · CI/CD','Database Design','Algorithm Design & Analysis','Machine Learning'] },
       { n:'02', t:'Languages',
-        items:['Python','Java','Dart','TypeScript','JavaScript','Rust','C / C++','SQL'] },
+        items:['PHP','Python','Java','Dart','TypeScript','JavaScript','Rust','C / C++','SQL'] },
       { n:'03', t:'Frameworks',
-        items:['Django · DRF','Spring Boot','Flutter','Next.js · React','Node.js'] },
-      { n:'04', t:'Testing & QA',
-        items:['Jest','Mutation Testing','BDD · Cucumber','JMeter · k6','SonarQube','SAST / DAST'] },
-      { n:'05', t:'Tools & DevOps',
-        items:['Git · GitLab CI/CD','REST APIs','django-silk','Error Monitoring','Scrum · Jira','Code Review'] }
+        items:['Laravel','Inertia.js','React','Vue 3','Tailwind CSS','Django · DRF','Spring Boot','Flutter','Next.js','Node.js'] },
+      { n:'04', t:'Integrations',
+        items:['WhatsApp Cloud API · Flows','Payment Gateway · QRIS (iPaymu)','Webhooks','Google Calendar API','Centrifugo · WebSockets','REST APIs'] },
+      { n:'05', t:'Testing & QA',
+        items:['PHPUnit','Vitest · Testing Library','Jest','Mutation Testing','BDD · Cucumber','JMeter · k6','SonarQube','SAST / DAST · OWASP ZAP'] },
+      { n:'06', t:'Tools & DevOps',
+        items:['Git · GitHub Actions · GitLab CI','Docker · Docker Compose','django-silk','Error Monitoring','Scrum · Jira','Code Review'] }
     ]
   },
   {
@@ -110,7 +117,7 @@ const WORLD_HOTSPOTS = [
       { k:'github', v:'github.com / HusinHakim', href:'https://github.com/HusinHakim' },
       { k:'linkedin', v:'husin hidayatul hakim', href:'https://www.linkedin.com/in/husinhakim/' },
       { k:'location', v:'Jakarta, Indonesia', href:null },
-      { k:'availability', v:'open · 2026 internship', href:null }
+      { k:'availability', v:'interning at PT Datara · open to chat', href:null }
     ]
   }
 ];

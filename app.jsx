@@ -168,6 +168,7 @@ function PanelAbout({ data }) {
                     <div className="titem-org">{e.org}</div>
                   </div>
                   <div className="titem-date">{e.date}</div>
+                  {e.desc && <div className="titem-desc">{e.desc}</div>}
                 </div>
               ))}
             </div>
